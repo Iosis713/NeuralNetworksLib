@@ -12,5 +12,10 @@ protected:
 public:
     friend class NeuralNet;
 
+    InputLayer() = default;
+    InputLayer(const std::vector<InputNeuron>& inputNeurons_)
+        : inputNeurons(inputNeurons_)
+    {};
+
 
 };

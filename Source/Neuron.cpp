@@ -7,6 +7,10 @@ Neuron::Neuron(const std::size_t inputSize_)
     , inputSize(inputSize_)
 {
     weights.reserve(inputSize);
+    for (std::size_t weightIndex = 0; weightIndex < inputSize; weightIndex++)
+    {
+        weights.push_back(RandomInitialise());
+    }
 }
 
 double Neuron::RandomInitialise()

@@ -17,6 +17,8 @@ set(SRC     Source/InputNeuron.cpp
 add_executable(${PROJECT_NAME} main.cpp)
 add_library(${PROJECT_NAME}-lib STATIC ${SRC})
 
+target_link_libraries(${PROJECT_NAME}   PRIVATE     ${PROJECT_NAME}-lib)
+
 target_compile_options(${PROJECT_NAME}  PRIVATE ${FLAGS})
 target_compile_options(${PROJECT_NAME}-lib  PRIVATE ${FLAGS})
 
