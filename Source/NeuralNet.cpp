@@ -25,9 +25,8 @@ NeuralNet::NeuralNet(const InputLayer& inputLayer_
     outputLayer = Layer{ outputLayerSize, hiddenLayers.at(hiddenLayers.size() - 1).neurons.size() };
 }
 
-void NeuralNet::Forward()
+void NeuralNet::ComputeInputLayer()
 {
-    //first hidden layer
     for (auto& neuron : hiddenLayers.at(0).neurons)
     {
         neuron.value = 0.0;
@@ -39,43 +38,35 @@ void NeuralNet::Forward()
             previousLayerNeuron++;
         }
 
-        //activationFunction(neuron.value);
+        activationFunction(neuron.value);
     }
+}
 
-    //rest of hidden layers
-    for (auto hiddenLayer = hiddenLayers.begin() + 1; hiddenLayer != hiddenLayers.end(); hiddenLayer++)
-    {
-        auto previousLayer = hiddenLayer - 1;
-
-        for (auto& neuron : hiddenLayer->neurons)
-        {
-            neuron.value = 0.0;
-            auto previousLayerNeuron = previousLayer->neurons.begin();
-            
-            for (auto weight : neuron.weights)
-            {
-                neuron.value += weight * previousLayerNeuron->value;
-                previousLayerNeuron++;
-            }
-
-            //activationFunction(neuron.value);
-        }
-    }
-
-    //output layer
-    for (auto& neuron : outputLayer.neurons)
+void NeuralNet::ComputeLayer(Layer& layer, const Layer& previousLayer)
+{
+    for (auto& neuron : layer.neurons)
     {
         neuron.value = 0.0;
-        auto lastLayerCorrespondingNeuron = (hiddenLayers.end() - 1)->neurons.begin();
-
+        auto previousLayerNeuron = previousLayer.neurons.begin();
+        
         for (auto weight : neuron.weights)
         {
-            neuron.value += weight * lastLayerCorrespondingNeuron->value;
-            lastLayerCorrespondingNeuron++;
+            neuron.value += weight * previousLayerNeuron->value;
+            previousLayerNeuron++;
         }
 
-        //activationFunction(neuron.value);
-    }
+        activationFunction(neuron.value);
+    }   
+}
+
+void NeuralNet::Forward()
+{
+    ComputeInputLayer();
+
+    for (std::size_t hiddenLayerIndex = 1; hiddenLayerIndex < hiddenLayers.size(); hiddenLayerIndex++)
+        ComputeLayer(hiddenLayers[hiddenLayerIndex], hiddenLayers[hiddenLayerIndex - 1]);
+
+    ComputeLayer(outputLayer, hiddenLayers.back());
 }
 
 void NeuralNet::Print()

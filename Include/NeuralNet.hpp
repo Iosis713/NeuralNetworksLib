@@ -14,11 +14,15 @@ namespace ActivationFunction
 
 class NeuralNet
 {
-protected:
+private:
     InputLayer inputLayer;
     std::vector<Layer> hiddenLayers;
     Layer outputLayer;
     std::function<void(double&)> activationFunction = ActivationFunction::TanH;
+
+    void ComputeInputLayer();
+    void ComputeLayer(Layer& layer, const Layer& previousLayer);
+
 
 public:
     //temporarly constructor with random weights initialization, as an input to genetic algorithm

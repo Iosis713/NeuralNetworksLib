@@ -3,7 +3,7 @@
 #include <random>
 
 Neuron::Neuron(const std::size_t inputSize_)
-    : InputNeuron(RandomInitialise())
+    : InputNeuron(0.0)
     , inputSize(inputSize_)
 {
     weights.reserve(inputSize);
