@@ -25,43 +25,9 @@ NeuralNet::NeuralNet(const InputLayer& inputLayer_
     outputLayer = Layer{ outputLayerSize, hiddenLayers.at(hiddenLayers.size() - 1).neurons.size() };
 }
 
-void NeuralNet::ComputeInputLayer()
-{
-    for (auto& neuron : hiddenLayers.at(0).neurons)
-    {
-        neuron.value = 0.0;
-        auto previousLayerNeuron = inputLayer.neurons.begin();
-        
-        for (auto weight : neuron.weights)
-        {
-            neuron.value += weight * previousLayerNeuron->value;
-            previousLayerNeuron++;
-        }
-
-        activationFunction(neuron.value);
-    }
-}
-
-void NeuralNet::ComputeLayer(Layer& layer, const Layer& previousLayer)
-{
-    for (auto& neuron : layer.neurons)
-    {
-        neuron.value = 0.0;
-        auto previousLayerNeuron = previousLayer.neurons.begin();
-        
-        for (auto weight : neuron.weights)
-        {
-            neuron.value += weight * previousLayerNeuron->value;
-            previousLayerNeuron++;
-        }
-
-        activationFunction(neuron.value);
-    }   
-}
-
 void NeuralNet::Forward()
 {
-    ComputeInputLayer();
+    ComputeLayer(hiddenLayers[0], inputLayer);
 
     for (std::size_t hiddenLayerIndex = 1; hiddenLayerIndex < hiddenLayers.size(); hiddenLayerIndex++)
         ComputeLayer(hiddenLayers[hiddenLayerIndex], hiddenLayers[hiddenLayerIndex - 1]);

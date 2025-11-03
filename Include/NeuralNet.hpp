@@ -5,11 +5,20 @@
 
 #include <functional>
 #include <cmath>
+#include <concepts>
+#include <type_traits>
 
 namespace ActivationFunction
 {
     void Sigmoid(double& value);//Logistic
     void TanH(double& value);
+};
+
+template<typename T>
+concept LayerT = requires(T t)
+{
+    requires std::same_as<decltype(t.neurons), std::vector<typename decltype(t.neurons)::value_type>>;
+    requires std::derived_from<typename decltype(t.neurons)::value_type, InputNeuron>;
 };
 
 class NeuralNet
@@ -20,8 +29,23 @@ private:
     Layer outputLayer;
     std::function<void(double&)> activationFunction = ActivationFunction::TanH;
 
-    void ComputeInputLayer();
-    void ComputeLayer(Layer& layer, const Layer& previousLayer);
+    template<LayerT PreviousLayer>
+    void ComputeLayer(Layer& layer, const PreviousLayer& previousLayer)
+    {
+        for (auto& neuron : layer.neurons)
+        {
+            neuron.value = 0.0;
+            auto previousLayerNeuron = previousLayer.neurons.begin();
+
+            for (auto weight : neuron.weights)
+            {
+                neuron.value += weight * previousLayerNeuron->value;
+                previousLayerNeuron++;
+            }
+
+            activationFunction(neuron.value);
+        }   
+    }
 
 
 public:
