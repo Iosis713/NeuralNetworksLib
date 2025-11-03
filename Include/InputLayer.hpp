@@ -7,14 +7,14 @@
 class InputLayer
 {
 protected:
-    std::vector<InputNeuron> inputNeurons;
+    std::vector<InputNeuron> neurons;
 
 public:
     friend class NeuralNet;
 
     InputLayer() = default;
-    InputLayer(const std::vector<InputNeuron>& inputNeurons_)
-        : inputNeurons(inputNeurons_)
+    InputLayer(const std::vector<InputNeuron>& neurons_)
+        : neurons(neurons_)
     {};
 
 

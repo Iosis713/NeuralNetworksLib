@@ -17,7 +17,7 @@ NeuralNet::NeuralNet(const InputLayer& inputLayer_
     for (std::size_t hiddenLayerSizeIndex = 0; hiddenLayerSizeIndex < hiddenLayersSizes.size(); hiddenLayerSizeIndex++)
     {
         if (hiddenLayerSizeIndex == 0)
-            hiddenLayers.emplace_back(Layer{ hiddenLayersSizes[0], inputLayer.inputNeurons.size()});
+            hiddenLayers.emplace_back(Layer{ hiddenLayersSizes[0], inputLayer.neurons.size()});
         else
             hiddenLayers.emplace_back(Layer{ hiddenLayersSizes[hiddenLayerSizeIndex], hiddenLayersSizes[hiddenLayerSizeIndex -1 ]});
     }
@@ -30,7 +30,7 @@ void NeuralNet::ComputeInputLayer()
     for (auto& neuron : hiddenLayers.at(0).neurons)
     {
         neuron.value = 0.0;
-        auto previousLayerNeuron = inputLayer.inputNeurons.begin();
+        auto previousLayerNeuron = inputLayer.neurons.begin();
         
         for (auto weight : neuron.weights)
         {
@@ -76,7 +76,7 @@ void NeuralNet::Print()
               << "Hidden Layers [0...n]:\n"
               << "Output Layer: \n";
     
-    for (const auto& neuron : inputLayer.inputNeurons)
+    for (const auto& neuron : inputLayer.neurons)
         std::cout << neuron.value << " "; 
 
     std::cout << '\n';

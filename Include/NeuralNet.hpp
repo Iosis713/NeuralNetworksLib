@@ -31,7 +31,6 @@ public:
             , const std::vector<std::size_t>& hiddenLayersSizes
             , const std::size_t outputLayerSize);
 
-    
     void Forward();
     void Print();
     void PrintWeights();
