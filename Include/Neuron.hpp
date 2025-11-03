@@ -13,9 +13,7 @@ private:
     
 public:
     std::vector<double> weights;
+    double error = 0.0;
 
     Neuron(const std::size_t inputSize_);
-
-
-
 };

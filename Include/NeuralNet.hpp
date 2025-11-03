@@ -14,6 +14,12 @@ namespace ActivationFunction
     void TanH(double& value);
 };
 
+namespace ActivationFunctionDerivative
+{
+    inline double Sigmoid(const double value) { return value * (1.0 - value); }
+    inline double TanH(const double value) { return 1.0 - std::pow(value, 2); }
+}
+
 template<typename T>
 concept LayerT = requires(T t)
 {
@@ -56,6 +62,7 @@ public:
             , const std::size_t outputLayerSize);
 
     void Forward();
+    void BackPropagation(const std::vector<double>& expected, const double learningRate);
     void Print();
     void PrintWeights();
 

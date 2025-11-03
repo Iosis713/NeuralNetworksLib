@@ -35,6 +35,68 @@ void NeuralNet::Forward()
     ComputeLayer(outputLayer, hiddenLayers.back());
 }
 
+void NeuralNet::BackPropagation(const std::vector<double>& expected, const double learningRate)
+{
+    //Output layers errors
+    for (std::size_t i = 0; i < outputLayer.neurons.size(); i++)
+    {
+        auto& neuron = outputLayer.neurons[i];
+        double output = neuron.value;
+        neuron.error = (expected[i] - output) * ActivationFunctionDerivative::TanH(output);;
+    }
+
+    //Hidden layers
+    for (std::size_t layerIndex = (hiddenLayers.size() - 1); layerIndex >= 0; --layerIndex)
+    {
+        auto& layer = hiddenLayers[layerIndex];
+        const Layer& nextLayer = (layerIndex == (hiddenLayers.size() - 1)) ? outputLayer : hiddenLayers[layerIndex + 1];
+
+        for (std::size_t i = 0; i < layer.neurons.size(); i++)
+        {
+            auto& neuron = layer.neurons[i];
+            double sum = 0.0;
+
+            for (auto& nextNeuron : nextLayer.neurons)
+                sum += nextNeuron.weights[i] + nextNeuron.error;
+
+            neuron.error = ActivationFunctionDerivative::TanH(neuron.value) * sum;
+        }
+    }
+
+    //Update weights
+    //Hidden -> Output
+
+    {
+        const Layer& previousLayer = hiddenLayers.back();
+        for (auto& neuron : outputLayer.neurons)
+        {
+            for (std::size_t weightIndex = 0; weightIndex < neuron.weights.size(); weightIndex++)
+                neuron.weights[weightIndex] += learningRate * neuron.error * previousLayer.neurons[weightIndex].value;
+        }
+    }
+
+    //Input -> hidden layers
+    for (std::size_t layerIndex = 0; layerIndex < hiddenLayers.size(); layerIndex++)
+    {
+        if (layerIndex == 0)
+        {
+            auto& neuron = hiddenLayers[layerIndex].neurons.at(0);
+            for (std::size_t w = 0.0; w < neuron.weights.size(); w++)
+                neuron.weights[w] += learningRate * neuron.error * inputLayer.neurons[w].value;
+        }
+        else
+        {
+            const auto& previousLayer = hiddenLayers[layerIndex - 1];
+            for (auto& neuron : hiddenLayers[layerIndex].neurons)
+            {
+                for (std::size_t w = 0.0; w < neuron.weights.size(); w++)
+                    neuron.weights[w] += learningRate * neuron.error * previousLayer.neurons[w].value;
+            }
+        }
+    }
+}
+
+
 void NeuralNet::Print()
 {
     std::cout << "FORMAT:\n"
