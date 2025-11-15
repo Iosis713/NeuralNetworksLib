@@ -33,7 +33,7 @@ private:
     InputLayer inputLayer;
     std::vector<Layer> hiddenLayers;
     Layer outputLayer;
-    std::function<void(double&)> activationFunction = ActivationFunction::TanH;
+    std::function<void(double&)> activationFunction = ActivationFunction::Sigmoid;
 
     template<LayerT PreviousLayer>
     void ComputeLayer(Layer& layer, const PreviousLayer& previousLayer)
@@ -63,6 +63,8 @@ public:
 
     void Forward();
     void BackPropagation(const std::vector<double>& expected, const double learningRate);
+    void Train(const std::vector<InputLayer>& trainingInputs, const std::vector<std::vector<double>>& expected, const double learningRate, const long epochs);
+    
     void Print();
     void PrintWeights();
 

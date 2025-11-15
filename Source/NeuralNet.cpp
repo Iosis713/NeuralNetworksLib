@@ -42,7 +42,7 @@ void NeuralNet::BackPropagation(const std::vector<double>& expected, const doubl
     {
         auto& neuron = outputLayer.neurons[i];
         double output = neuron.value;
-        neuron.error = (expected[i] - output) * ActivationFunctionDerivative::TanH(output);;
+        neuron.error = (expected[i] - output) * ActivationFunctionDerivative::Sigmoid(output);;
     }
 
     //Hidden layers
@@ -59,7 +59,7 @@ void NeuralNet::BackPropagation(const std::vector<double>& expected, const doubl
             for (auto& nextNeuron : nextLayer.neurons)
                 sum += nextNeuron.weights[i] * nextNeuron.error;
 
-            neuron.error = ActivationFunctionDerivative::TanH(neuron.value) * sum;
+            neuron.error = ActivationFunctionDerivative::Sigmoid(neuron.value) * sum;
         }
     }
 
@@ -89,13 +89,27 @@ void NeuralNet::BackPropagation(const std::vector<double>& expected, const doubl
             const auto& previousLayer = hiddenLayers[layerIndex - 1];
             for (auto& neuron : hiddenLayers[layerIndex].neurons)
             {
-                for (std::size_t w = 0.0; w < neuron.weights.size(); w++)
+                for (std::size_t w = 0; w < neuron.weights.size(); w++)
                     neuron.weights[w] += learningRate * neuron.error * previousLayer.neurons[w].value;
             }
         }
     }
 }
 
+void NeuralNet::Train(const std::vector<InputLayer>& trainingInputs, const std::vector<std::vector<double>>& expected, const double learningRate, const long epochs)
+{
+    for (long epoch = 0; epoch < epochs; epoch++)
+    {
+        for (size_t i = 0; i < trainingInputs.size(); i++)
+        {
+            for (size_t j = 0; j < trainingInputs[i].neurons.size(); j++)
+                inputLayer.neurons[j].value = trainingInputs[i].neurons[j].value;
+
+            Forward();
+            BackPropagation(expected[i], learningRate);
+        }
+    }
+}
 
 void NeuralNet::Print()
 {

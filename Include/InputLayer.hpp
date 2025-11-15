@@ -17,7 +17,9 @@ public:
         : neurons(neurons_)
     {};
 
-    std::vector<InputNeuron>& GetNeurons() { return this->neurons; };
+    InputLayer(const InputLayer& source);
 
+    std::vector<InputNeuron>& GetNeurons() { return this->neurons; };
+    InputLayer& operator=(const InputLayer& source);
 
 };

@@ -9,6 +9,7 @@ set(GMOCK_LIBRARIES /usr/lib/libgmock.a /usr/lib/libgmock_main.a)
 find_package(GTest REQUIRED)
 
 set(SRC     Source/InputNeuron.cpp
+            Source/InputLayer.cpp
             Source/Neuron.cpp
             Source/Layer.cpp
             Source/NeuralNet.cpp
