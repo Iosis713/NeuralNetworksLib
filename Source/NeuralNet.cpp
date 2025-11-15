@@ -46,10 +46,10 @@ void NeuralNet::BackPropagation(const std::vector<double>& expected, const doubl
     }
 
     //Hidden layers
-    for (std::size_t layerIndex = (hiddenLayers.size() - 1); layerIndex >= 0; --layerIndex)
+    for (int layerIndex = (hiddenLayers.size() - 1); layerIndex >= 0; --layerIndex)
     {
         auto& layer = hiddenLayers[layerIndex];
-        const Layer& nextLayer = (layerIndex == (hiddenLayers.size() - 1)) ? outputLayer : hiddenLayers[layerIndex + 1];
+        const Layer& nextLayer = (layerIndex == static_cast<int>(hiddenLayers.size() - 1)) ? outputLayer : hiddenLayers[layerIndex + 1];
 
         for (std::size_t i = 0; i < layer.neurons.size(); i++)
         {
@@ -57,7 +57,7 @@ void NeuralNet::BackPropagation(const std::vector<double>& expected, const doubl
             double sum = 0.0;
 
             for (auto& nextNeuron : nextLayer.neurons)
-                sum += nextNeuron.weights[i] + nextNeuron.error;
+                sum += nextNeuron.weights[i] * nextNeuron.error;
 
             neuron.error = ActivationFunctionDerivative::TanH(neuron.value) * sum;
         }
@@ -81,7 +81,7 @@ void NeuralNet::BackPropagation(const std::vector<double>& expected, const doubl
         if (layerIndex == 0)
         {
             auto& neuron = hiddenLayers[layerIndex].neurons.at(0);
-            for (std::size_t w = 0.0; w < neuron.weights.size(); w++)
+            for (std::size_t w = 0; w < neuron.weights.size(); w++)
                 neuron.weights[w] += learningRate * neuron.error * inputLayer.neurons[w].value;
         }
         else

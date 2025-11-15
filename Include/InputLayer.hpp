@@ -17,5 +17,7 @@ public:
         : neurons(neurons_)
     {};
 
+    std::vector<InputNeuron>& GetNeurons() { return this->neurons; };
+
 
 };

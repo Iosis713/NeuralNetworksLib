@@ -66,4 +66,7 @@ public:
     void Print();
     void PrintWeights();
 
+    InputLayer& GetInputLayer() { return this->inputLayer; };
+    Layer& GetOutputLayer() { return this->outputLayer; }
+
 };

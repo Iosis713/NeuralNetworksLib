@@ -13,4 +13,6 @@ friend class NeuralNet;
     Layer() = default;
     Layer(const std::size_t layerSize, const std::size_t previousLayerSize);
 
+    std::vector<Neuron>& GetNeurons() { return this->neurons; }
+
 };
